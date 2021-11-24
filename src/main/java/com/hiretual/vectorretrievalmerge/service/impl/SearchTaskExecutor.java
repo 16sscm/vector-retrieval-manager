@@ -10,7 +10,7 @@ import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.concurrent.Future;
 
 @Component

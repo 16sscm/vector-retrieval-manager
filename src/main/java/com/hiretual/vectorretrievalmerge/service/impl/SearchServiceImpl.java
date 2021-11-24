@@ -28,11 +28,14 @@ public class SearchServiceImpl implements SearchService {
 //        searchEngines[1]="1";
 //        searchEngines[2]="2";
 //        searchEngines[3]="3";
-        searchEngines[0]="http://10.100.10.19:8899/search";
+        searchEngines[0]="http://10.100.10.19:8899";
+
 
     }
+    private static String route="/search";
     @Autowired
     SearchTaskExecutor taskExecutor;
+
     public List<KNNResult> search(String query,int topK) {
         long t=System.currentTimeMillis();
         String esPayload= RestClient.astaskToESPayload(query);

@@ -1,28 +1,24 @@
 package com.hiretual.vectorretrievalmerge.controller;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.hiretual.vectorretrievalmerge.model.KNNResult;
-import com.hiretual.vectorretrievalmerge.service.SearchService;
+import com.hiretual.vectorretrievalmerge.service.IndexBuildService;
 import com.hiretual.vectorretrievalmerge.utils.RequestParser;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
 @Component
 @RestController
-public class SearchController {
-
+public class IndexBuildController {
     @Autowired
-    SearchService searchServiceImpl;
+    IndexBuildService indexBuildServiceImpl;
 
-    @RequestMapping(value="/search", method= RequestMethod.POST)
-    public List<KNNResult> search(@RequestBody String query) {
-
-        return searchServiceImpl.search( query,1000);
+    @RequestMapping(value="/doc/add", method= RequestMethod.POST, produces="application/json;charset=UTF-8")
+    public void insertDocument(HttpServletRequest request) {
+        JsonNode array = RequestParser.getPostParameter(request);
+        indexBuildServiceImpl.dispatch(array);
     }
 }
