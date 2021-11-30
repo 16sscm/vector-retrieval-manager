@@ -4,5 +4,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 public interface IndexBuildService {
     void dispatch(JsonNode documentList);
-    void post2Engine(JsonNode json, String searchEngine);
+    void update(JsonNode document);
+    public void commitMainIndex();
+    public void commitAdditionalIndex();
+    public void mergeMainIndex();
+    public void mergeAdditionalIndex();
 }

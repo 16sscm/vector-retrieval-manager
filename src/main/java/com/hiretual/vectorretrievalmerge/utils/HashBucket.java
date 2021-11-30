@@ -7,6 +7,13 @@ public class HashBucket {
         double tmp=(double)hashcode;
         tmp=tmp/Integer.MAX_VALUE/2*num;
         int index=(int)(Math.floor(tmp+numD/2));
+        //bound case
+        if(index==num){
+            index=num-1;
+        }
+        if(index<0){
+            index=0;
+        }
         return index;
     }
 }

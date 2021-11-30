@@ -21,4 +21,13 @@ public class IndexBuildController {
         JsonNode array = RequestParser.getPostParameter(request);
         indexBuildServiceImpl.dispatch(array);
     }
+
+    @RequestMapping(value="/index/commit", method= RequestMethod.POST, produces="application/json;charset=UTF-8")
+    public void commit() {
+        indexBuildServiceImpl.commitMainIndex();
+    }
+    @RequestMapping(value="/index/merge", method= RequestMethod.POST, produces="application/json;charset=UTF-8")
+    public void merge() {
+        indexBuildServiceImpl.mergeMainIndex();
+    }
 }

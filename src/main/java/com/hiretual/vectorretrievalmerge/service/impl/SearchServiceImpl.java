@@ -32,7 +32,7 @@ public class SearchServiceImpl implements SearchService {
 
 
     }
-    private static String route="/search";
+    private static final String searchRoute ="/search";
     @Autowired
     SearchTaskExecutor taskExecutor;
 
