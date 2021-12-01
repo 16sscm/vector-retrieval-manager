@@ -18,13 +18,14 @@ public class IndexBuildServiceImpl implements IndexBuildService {
     private static String[] searchEngines;
     private String additionalEngine="";
     static {
-        searchEngines = new String[2];
+        searchEngines = new String[1];
 //        searchEngines[0]="0";
 //        searchEngines[1]="1";
 //        searchEngines[2]="2";
 //        searchEngines[3]="3";
         searchEngines[0] = "http://10.100.10.19:8898";
-        searchEngines[0] = "http://10.100.10.19:8897";
+        // searchEngines[1] = "http://10.100.10.19:8897";
+       
 
     }
 
@@ -67,7 +68,7 @@ public class IndexBuildServiceImpl implements IndexBuildService {
     @Override
     public void commitMainIndex(){
         for(String engine:searchEngines){
-            postRequest2Engine(engine+commitRoute);
+            getRequest2Engine(engine+commitRoute);
         }
     }
 
@@ -77,7 +78,7 @@ public class IndexBuildServiceImpl implements IndexBuildService {
      */
     @Override
     public void commitAdditionalIndex(){
-        postRequest2Engine(additionalEngine+commitRoute);
+        getRequest2Engine(additionalEngine+commitRoute);
     }
     /**
      * merge segment and start ann index
@@ -86,7 +87,7 @@ public class IndexBuildServiceImpl implements IndexBuildService {
     @Override
     public void mergeMainIndex(){
         for(String engine:searchEngines){
-            postRequest2Engine(engine+mergeRoute);
+            getRequest2Engine(engine+mergeRoute);
         }
     }
 
@@ -96,20 +97,20 @@ public class IndexBuildServiceImpl implements IndexBuildService {
      */
     @Override
     public void mergeAdditionalIndex(){
-        postRequest2Engine(additionalEngine+mergeRoute);
+        getRequest2Engine(additionalEngine+mergeRoute);
     }
     /**
      * request without body
      * @param url
      */
-    private void postRequest2Engine( String url) {
-        logger.info("post request,engine url:" + url);
+    private void getRequest2Engine( String url) {
+      
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<String> request = new HttpEntity( headers);
         RestTemplate restTemplate = new RestTemplate();
         try {
-            String response = restTemplate.postForObject(url, request, String.class);
+            String response = restTemplate.getForObject(url,  String.class);
             logger.info("url:"+url+","+"response:"+response);
 
         } catch (Exception e) {
@@ -124,7 +125,7 @@ public class IndexBuildServiceImpl implements IndexBuildService {
      * @param url
      */
     private void postRequest2Engine(JsonNode json, String url) {
-        logger.info("post request,engine url:" + url);
+       
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<String> request = new HttpEntity(json, headers);

@@ -17,13 +17,11 @@ import java.util.Properties;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class KafkaTest {
-    @Test
+    // @Test
     public void asListTest(){
-        int[] arr = {1,2,3};
-        List list = Arrays.asList(arr);
-        System.out.println(list.size());
+        
     }
-    @Test
+    // @Test
     public void KafkaTests() throws InterruptedException {
         //1.配置属性值
         Properties properties = new Properties();
