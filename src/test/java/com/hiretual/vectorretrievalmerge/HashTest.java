@@ -1,5 +1,6 @@
 package com.hiretual.vectorretrievalmerge;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.hiretual.vectorretrievalmerge.utils.HashBucket;
 import org.junit.Test;
 
@@ -8,10 +9,24 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 public class HashTest {
+    @Test
+    public void  testBucket(){
+        String []searchEngines=new String[]{"a","b"};
+        Map<String,List<Integer>>map=new HashMap<>();
+        for(String url:searchEngines){
+            map.put(url,new ArrayList<>());
+        }
+        map.get("a").add(1);
+        map.get("a").add(2);
+        map.get("b").add(2);
+        System.out.print(map.get("a").size());
+    }
     public static int toHash(String key) {
         int arraySize = 11113; // 数组大小一般取质数
         int hashCode = 0;
@@ -24,10 +39,10 @@ public class HashTest {
     }
 
 
-    public static void main(String[] args) {
-        test();
+    // public static void main(String[] args) {
+    //     test();
 
-    }
+    // }
     public static void test1(){
         int scale=100000;
         String[]testCases=genTestStrings(scale);

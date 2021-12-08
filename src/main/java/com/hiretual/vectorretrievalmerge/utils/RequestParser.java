@@ -61,7 +61,7 @@ public class RequestParser {
         try {
             str = mapper.writeValueAsString(object);
         } catch (JsonProcessingException e) {
-            // TODO Auto-generated catch block
+           
             e.printStackTrace();
         }
         return str;

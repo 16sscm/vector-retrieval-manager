@@ -1,8 +1,14 @@
 package com.hiretual.vectorretrievalmerge.service.impl;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.hiretual.vectorretrievalmerge.service.IndexBuildService;
 import com.hiretual.vectorretrievalmerge.utils.HashBucket;
+import com.hiretual.vectorretrievalmerge.utils.JsonParser;
 import com.hiretual.vectorretrievalmerge.utils.RequestParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,16 +42,22 @@ public class IndexBuildServiceImpl implements IndexBuildService {
 
     @Override
     public void dispatch(JsonNode documentList) {
-//        int testSize=8;
-//        int bucket[]=new int[testSize];
+        int numEngine=searchEngines.length;
+       Map<Integer,List<JsonNode>>map=new HashMap<>();
+       for(int i=0;i<numEngine;i++){
+           map.put(i,new ArrayList<>());
+       }
         for (JsonNode document : documentList) {
             String uid = RequestParser.getDocUid(document);
 //            int bucketIndex=HashBucket.getBucketIndex(uid,testSize);
 //            bucket[bucketIndex]++;
-            int bucketIndex = HashBucket.getBucketIndex(uid, searchEngines.length);
-            String engine = searchEngines[bucketIndex];
+            int bucketIndex = HashBucket.getBucketIndex(uid, numEngine);
+            map.get(bucketIndex).add(document);
+        }
+        for (int i=0;i<numEngine;i++){
+            String engine = searchEngines[i];
             String url = engine + addRoute;
-            postRequest2Engine(document, url);
+            postRequest2Engine(map.get(i), url);
         }
         logger.info("dispatch done");
 
@@ -107,7 +119,6 @@ public class IndexBuildServiceImpl implements IndexBuildService {
       
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<String> request = new HttpEntity( headers);
         RestTemplate restTemplate = new RestTemplate();
         try {
             String response = restTemplate.getForObject(url,  String.class);
@@ -124,10 +135,31 @@ public class IndexBuildServiceImpl implements IndexBuildService {
      * @param json
      * @param url
      */
+    private void postRequest2Engine(List<JsonNode> list, String url) {
+       
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        // String json=JsonParser.getJsonString(list);
+        HttpEntity<String> request = new HttpEntity(list, headers);
+        RestTemplate restTemplate = new RestTemplate();
+        try {
+            String response = restTemplate.postForObject(url, request, String.class);
+            logger.info("url:"+url+","+"response:"+response);
+        } catch (Exception e) {
+            logger.error("post document request error:", e);
+        }
+
+    }
+    /**
+     * request with body
+     * @param json
+     * @param url
+     */
     private void postRequest2Engine(JsonNode json, String url) {
        
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
+        // String json=JsonParser.getJsonString(list);
         HttpEntity<String> request = new HttpEntity(json, headers);
         RestTemplate restTemplate = new RestTemplate();
         try {
