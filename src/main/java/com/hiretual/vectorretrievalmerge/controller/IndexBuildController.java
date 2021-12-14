@@ -16,10 +16,10 @@ public class IndexBuildController {
     @Autowired
     IndexBuildService indexBuildServiceImpl;
 
-    @RequestMapping(value="/doc/add", method= RequestMethod.POST, produces="application/json;charset=UTF-8")
-    public void insertDocument(HttpServletRequest request) {
-        JsonNode array = RequestParser.getPostParameter(request);
-        indexBuildServiceImpl.dispatch(array);
+    @RequestMapping(value="/doc/add", method= RequestMethod.GET)
+    public void insertDocument() {
+        
+        indexBuildServiceImpl.dispatch();
     }
 
     @RequestMapping(value="/index/commit", method= RequestMethod.GET, produces="application/json;charset=UTF-8")

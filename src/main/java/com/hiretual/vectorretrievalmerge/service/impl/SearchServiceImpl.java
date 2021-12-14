@@ -34,7 +34,7 @@ public class SearchServiceImpl implements SearchService {
     }
     private static final String searchRoute ="/search";
     @Autowired
-    SearchTaskExecutor taskExecutor;
+    RestfulTaskExecutor taskExecutor;
 
     public List<KNNResult> search(String query,int topK) {
         long t=System.currentTimeMillis();
@@ -70,7 +70,7 @@ public class SearchServiceImpl implements SearchService {
             while (true) {
                 try {
                     //  throw TaskRejectedException if thread pool size exceeds MaxPoolSize ，then wait and retry
-                    Future<String> stringFuture = taskExecutor.execute(queryJsonString,searchEngine);
+                    Future<String> stringFuture = taskExecutor.executeSearch(queryJsonString,searchEngine);
                     lstFuture.add(stringFuture);
                     break;
                 } catch (TaskRejectedException e) {
