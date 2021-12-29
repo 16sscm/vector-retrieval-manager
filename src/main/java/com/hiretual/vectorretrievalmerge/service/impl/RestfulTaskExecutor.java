@@ -22,12 +22,16 @@ public class RestfulTaskExecutor {
     @Async
     public Future<String> executeSearch(String jsonString, String searchEngine) {
         logger.info("execute search:"+searchEngine);
+        
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<String> request = new HttpEntity(jsonString, headers);
         RestTemplate restTemplate = new RestTemplate();
+        long t11 = System.currentTimeMillis();
         String response = restTemplate.postForObject(searchEngine, request, String.class);
+        long t12 = System.currentTimeMillis();
         Future<String> future = new AsyncResult<String>(response);
+        logger.info(searchEngine +" | " + (t12 - t11));
         return future;
     }
     /**

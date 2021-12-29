@@ -33,7 +33,6 @@ public class JsonParser {
             if(jsonnode.has("esSearchArray")){
                 JsonNode esSearchArray=jsonnode.get("esSearchArray");
                 ObjectNode objectNode=(ObjectNode)esSearchArray;
-
                 objectNode.put("configAction","search_user");
                 return mapper.writeValueAsString(objectNode);
             }else {
@@ -45,6 +44,27 @@ public class JsonParser {
             logger.error("fail to parse json string to json object|" + jsonString, e);
             return null;
         }
+    }
+    public static String extractEmbedding(String jsonString) {
+        ObjectMapper mapper = new ObjectMapper();
+
+        try {
+            JsonNode jsonnode = mapper.readTree(jsonString);
+
+            if(jsonnode.has("astask_embeds")){
+                JsonNode embeddings=jsonnode.get("astask_embeds");
+                JsonNode embedding=embeddings.get(0);
+                return mapper.writeValueAsString(embedding);
+            }else {
+                logger.error("fail to parse es payload,has no field esSearchArray");
+                return null;
+            }
+
+        } catch (Exception e) {
+            logger.error("fail to parse json string to json object|" + jsonString, e);
+           
+        }
+        return null;
     }
     public static List<KNNResult> transformJson2KNNResults(String jsonString){
         ObjectMapper mapper = new ObjectMapper();

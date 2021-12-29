@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.hiretual.vectorretrievalmerge.config.SearchEngineConfig;
 import com.hiretual.vectorretrievalmerge.model.DistributeInfo;
 import com.hiretual.vectorretrievalmerge.service.IndexBuildService;
 import com.hiretual.vectorretrievalmerge.utils.HashBucket;
@@ -23,22 +24,9 @@ import org.springframework.web.client.RestTemplate;
 @Service
 public class IndexBuildServiceImpl implements IndexBuildService {
     private static final Logger logger = LoggerFactory.getLogger(IndexBuildServiceImpl.class);
-    private static String[] searchEngines;
+    private static List<String> searchEngines=SearchEngineConfig.getSearchEngines();
     private String additionalEngine="";
-    static {
-        searchEngines = new String[4];
-//        searchEngines[0]="0";
-//        searchEngines[1]="1";
-//        searchEngines[2]="2";
-//        searchEngines[3]="3";
-        searchEngines[0] = "http://10.100.10.19:8898";
-        searchEngines[1] = "http://10.100.10.19:8897";
-        searchEngines[2] = "http://10.100.10.19:8896";
-        searchEngines[3] = "http://10.100.10.19:8895";
-        // searchEngines[1] = "http://10.100.10.19:8897";
-       
-
-    }
+  
 
     @Autowired
     RestfulTaskExecutor taskExecutor;
@@ -49,15 +37,15 @@ public class IndexBuildServiceImpl implements IndexBuildService {
 
     @Override
     public void dispatch() {
-        int numEngine=searchEngines.length;
+        int numEngine=searchEngines.size();
       
         for (int i=0;i<numEngine;i++){
-            String engine = searchEngines[i];
+            String engine = searchEngines.get(i);
             String url = engine + addRoute;
             DistributeInfo distributeInfo=new DistributeInfo(numEngine, i);
             taskExecutor.postRequest2Engine(distributeInfo,url);
         }
-        logger.info("dispatch done");
+        
 
     }
 

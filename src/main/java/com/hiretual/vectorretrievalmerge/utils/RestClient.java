@@ -26,7 +26,7 @@ public class RestClient {
     }
 
     public static String astaskToEmbedding(String content){
-        String url="http://10.100.10.19:6000/astask/astask_tranform";
+        String url="http://10.100.10.19:8866/embedding/astask";
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.add("X-API-KEY","Qro19LxU4rMbPqrSU2ymWJhHSeOCtq6e");

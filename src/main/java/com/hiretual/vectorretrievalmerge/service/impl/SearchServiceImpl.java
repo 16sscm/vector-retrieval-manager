@@ -1,5 +1,6 @@
 package com.hiretual.vectorretrievalmerge.service.impl;
 
+import com.hiretual.vectorretrievalmerge.config.SearchEngineConfig;
 import com.hiretual.vectorretrievalmerge.model.KNNResult;
 import com.hiretual.vectorretrievalmerge.model.QueryWrapper;
 import com.hiretual.vectorretrievalmerge.service.SearchService;
@@ -21,17 +22,7 @@ import java.util.concurrent.Future;
 @Service
 public class SearchServiceImpl implements SearchService {
     private static final Logger logger = LoggerFactory.getLogger(SearchServiceImpl.class);
-    private static String[]searchEngines;
-    static {
-        searchEngines=new String[1];
-//        searchEngines[0]="0";
-//        searchEngines[1]="1";
-//        searchEngines[2]="2";
-//        searchEngines[3]="3";
-        searchEngines[0]="http://10.100.10.19:8899";
-
-
-    }
+    private static List<String> searchEngines=SearchEngineConfig.getSearchEngines();
     private static final String searchRoute ="/search";
     @Autowired
     RestfulTaskExecutor taskExecutor;
@@ -45,6 +36,11 @@ public class SearchServiceImpl implements SearchService {
         String esQuery=RestClient.generateEsQuery(esPayload);
         long t3=System.currentTimeMillis();
         String embedding=RestClient.astaskToEmbedding(query);
+        embedding=JsonParser.extractEmbedding(embedding);
+        if(embedding.equals("null")){
+            logger.info("unsupport astask to embedding");
+            return null;
+        }
         long t4=System.currentTimeMillis();
         QueryWrapper queryWrapper=new QueryWrapper(embedding,esQuery);
         long t5=System.currentTimeMillis();
@@ -65,12 +61,12 @@ public class SearchServiceImpl implements SearchService {
         TopKResult topKResult = new TopKResult(topK);
         List<Future<String>> lstFuture = new ArrayList<>();// 存放所有的线程，用于获取结果
         long t=System.currentTimeMillis();
-        logger.info("start distribute");
+       
         for (String searchEngine:searchEngines) {
             while (true) {
                 try {
                     //  throw TaskRejectedException if thread pool size exceeds MaxPoolSize ，then wait and retry
-                    Future<String> stringFuture = taskExecutor.executeSearch(queryJsonString,searchEngine);
+                    Future<String> stringFuture = taskExecutor.executeSearch(queryJsonString,searchEngine+searchRoute);
                     lstFuture.add(stringFuture);
                     break;
                 } catch (TaskRejectedException e) {
@@ -79,18 +75,21 @@ public class SearchServiceImpl implements SearchService {
                 }
             }
         }
-        long t1=System.currentTimeMillis();
-        logger.info("end distribute,cost:"+(t1-t));
+    
         //thread safe
         Vector<KNNResult>vector=new Vector<>();
         for ( int i=0;i<lstFuture.size();i++) {
+           
             Future<String> future=lstFuture.get(i);
             //block until the thread is finish
             String response=future.get();
-            if(response.equals("0")){
-                logger.info("search engine:"+searchEngines[i]+" ,future get:"+response+",empty result");
+            if(response==null){
+                logger.warn("engine return null,unsupport astask to lucene query");
+            }
+            else if(response.equals("0")){
+                logger.info("search engine:"+searchEngines.get(i)+" ,future get:"+response+",empty result");
             }else if(response.equals("-1")){
-                logger.info("search engine:"+searchEngines[i]+" ,future get:"+response+",search engine error");
+                logger.info("search engine:"+searchEngines.get(i)+" ,future get:"+response+",search engine error");
             }else {
                 List<KNNResult> knnResults=JsonParser.transformJson2KNNResults(response);
                 vector.addAll(knnResults);
@@ -98,7 +97,7 @@ public class SearchServiceImpl implements SearchService {
 
         }
         long t2=System.currentTimeMillis();
-        logger.info("end execute,cost:"+(t2-t1));
+        logger.info("end execute,cost:"+(t2-t));
         for(KNNResult knnResult:vector){
             topKResult.add(knnResult);
         }
