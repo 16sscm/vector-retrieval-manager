@@ -1,7 +1,7 @@
 set -x
 set -e
 
-USE_MIRRIOR_SOURCE=1
+USE_MIRRIOR_SOURCE=0
 
 # 软件源
 perl -pi -e 's/^\s*?deb/# deb/ig' /etc/apt/sources.list
