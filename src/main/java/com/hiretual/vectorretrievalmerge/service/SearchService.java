@@ -9,7 +9,7 @@ import java.util.concurrent.ExecutionException;
 
 public interface SearchService {
 
-    public List<KNNResult> search(String query,int topK);
+    public List<KNNResult> search(JsonNode query,int topK);
     public List<KNNResult> distribute(String queryJsonString,int topK) throws InterruptedException, ExecutionException;
 
 }

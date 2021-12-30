@@ -25,7 +25,7 @@ public class RestClient {
         return response;
     }
 
-    public static String astaskToEmbedding(String content){
+    public static String astaskToEmbedding(JsonNode content){
         String url="http://10.100.10.19:8866/embedding/astask";
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -36,7 +36,7 @@ public class RestClient {
         return response;
     }
 
-    public static String generateEsQuery(String content) {
+    public static String generateEsQuery(JsonNode content) {
         String url = "http://elasticsearch.db.testhtm/api/v3/user/generate_es_query";
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);

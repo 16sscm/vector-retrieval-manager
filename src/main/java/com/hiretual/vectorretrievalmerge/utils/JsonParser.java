@@ -24,24 +24,17 @@ public class JsonParser {
 
         return returnNode;
     }
-    public static String transformEsPayload(String jsonString) {
+    public static JsonNode transformEsPayload(JsonNode jsonNode) {
         ObjectMapper mapper = new ObjectMapper();
 
         try {
-            JsonNode jsonnode = mapper.readTree(jsonString);
-
-            if(jsonnode.has("esSearchArray")){
-                JsonNode esSearchArray=jsonnode.get("esSearchArray");
-                ObjectNode objectNode=(ObjectNode)esSearchArray;
+        
+                ObjectNode objectNode=(ObjectNode)jsonNode;
                 objectNode.put("configAction","search_user");
-                return mapper.writeValueAsString(objectNode);
-            }else {
-                logger.error("fail to parse es payload,has no field esSearchArray");
-                return null;
-            }
+                return (JsonNode)objectNode;
 
         } catch (Exception e) {
-            logger.error("fail to parse json string to json object|" + jsonString, e);
+            logger.error("fail to cast jsonnode  to objectnode" + jsonNode.toString(), e);
             return null;
         }
     }

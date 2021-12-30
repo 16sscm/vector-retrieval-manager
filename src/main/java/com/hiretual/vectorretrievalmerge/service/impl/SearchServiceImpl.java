@@ -1,5 +1,6 @@
 package com.hiretual.vectorretrievalmerge.service.impl;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.hiretual.vectorretrievalmerge.config.SearchEngineConfig;
 import com.hiretual.vectorretrievalmerge.model.KNNResult;
 import com.hiretual.vectorretrievalmerge.model.QueryWrapper;
@@ -27,10 +28,11 @@ public class SearchServiceImpl implements SearchService {
     @Autowired
     RestfulTaskExecutor taskExecutor;
 
-    public List<KNNResult> search(String query,int topK) {
+    public List<KNNResult> search(JsonNode query,int topK) {
         long t=System.currentTimeMillis();
-        String esPayload= RestClient.astaskToESPayload(query);
-        long t1=System.currentTimeMillis();
+        // String esPayload= RestClient.astaskToESPayload(query);
+        JsonNode esPayload=query.get("esSearchArray");
+        // long t1=System.currentTimeMillis();
         esPayload=JsonParser.transformEsPayload(esPayload);
         long t2=System.currentTimeMillis();
         String esQuery=RestClient.generateEsQuery(esPayload);
@@ -49,7 +51,7 @@ public class SearchServiceImpl implements SearchService {
         try{
             List<KNNResult>knnResults=distribute(queryJsonString,topK);
             long t7=System.currentTimeMillis();
-            System.out.println("search:"+(t1-t)+"|"+(t2-t1)+"|"+(t3-t2)+"|"+(t4-t3)+"|"+(t5-t4)+"|"+(t6-t5)+"|"+(t7-t6));
+            logger.info("search:"+(t2-t)+"|"+(t3-t2)+"|"+(t4-t3)+"|"+(t5-t4)+"|"+(t6-t5)+"|"+(t7-t6));
             return knnResults;
         }catch (Exception e){
             logger.error("fail to distribute search task",e);

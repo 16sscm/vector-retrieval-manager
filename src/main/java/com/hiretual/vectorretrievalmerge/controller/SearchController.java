@@ -21,8 +21,12 @@ public class SearchController {
     @Autowired
     SearchService searchServiceImpl;
 
+    @RequestMapping(value="/health_check", method={RequestMethod.GET, RequestMethod.POST})
+    public String healthCheck() {
+        return "ok\n";
+    }
     @RequestMapping(value="/search", method= RequestMethod.POST)
-    public @ResponseBody List<KNNResult> search(@RequestBody String query) {
+    public @ResponseBody List<KNNResult> search(@RequestBody JsonNode query) {
 
         return searchServiceImpl.search( query,1000);
     }
