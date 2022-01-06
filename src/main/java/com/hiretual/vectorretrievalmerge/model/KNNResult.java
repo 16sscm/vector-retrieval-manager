@@ -3,8 +3,14 @@ package com.hiretual.vectorretrievalmerge.model;
 public class KNNResult implements  Comparable<KNNResult> {
     private  String uid;
     private  float score;
+    private String rawJson;
 
-
+    public String getRawJson() {
+        return rawJson;
+    }
+    public void setRawJson(String rawJson) {
+        this.rawJson = rawJson;
+    }
     public KNNResult(){
 
     }

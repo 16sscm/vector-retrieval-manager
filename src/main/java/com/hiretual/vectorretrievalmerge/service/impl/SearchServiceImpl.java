@@ -79,7 +79,7 @@ public class SearchServiceImpl implements SearchService {
         }
     
         //thread safe
-        Vector<KNNResult>vector=new Vector<>();
+        ArrayList<KNNResult>list=new ArrayList<>();
         for ( int i=0;i<lstFuture.size();i++) {
            
             Future<String> future=lstFuture.get(i);
@@ -94,13 +94,13 @@ public class SearchServiceImpl implements SearchService {
                 logger.info("search engine:"+searchEngines.get(i)+" ,future get:"+response+",search engine error");
             }else {
                 List<KNNResult> knnResults=JsonParser.transformJson2KNNResults(response);
-                vector.addAll(knnResults);
+                list.addAll(knnResults);
             }
 
         }
         long t2=System.currentTimeMillis();
         logger.info("end execute,cost:"+(t2-t));
-        for(KNNResult knnResult:vector){
+        for(KNNResult knnResult:list){
             topKResult.add(knnResult);
         }
         long t3=System.currentTimeMillis();
