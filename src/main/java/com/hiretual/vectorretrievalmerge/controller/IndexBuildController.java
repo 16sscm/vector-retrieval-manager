@@ -22,9 +22,9 @@ public class IndexBuildController {
         indexBuildServiceImpl.dispatch();
     }
 
-    @RequestMapping(value="/index/commit", method= RequestMethod.GET, produces="application/json;charset=UTF-8")
+    @RequestMapping(value="/index/size", method= RequestMethod.GET, produces="application/json;charset=UTF-8")
     public void commit() {
-        indexBuildServiceImpl.commitMainIndex();
+        indexBuildServiceImpl.mainGetIndexSize();
     }
     @RequestMapping(value="/index/merge", method= RequestMethod.GET, produces="application/json;charset=UTF-8")
     public void merge() {

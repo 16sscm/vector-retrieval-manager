@@ -32,7 +32,7 @@ public class IndexBuildServiceImpl implements IndexBuildService {
     RestfulTaskExecutor taskExecutor;
     private  static final String addRoute = "/doc/add";
     private static final String deleteRoute = "/doc/delete";
-    private static final String commitRoute="/index/commit";
+    private static final String indexSizeRoute="/index/size";
     private static final String mergeRoute="/index/merge";
 
     @Override
@@ -64,9 +64,9 @@ public class IndexBuildServiceImpl implements IndexBuildService {
      * should only be called once
      */
     @Override
-    public void commitMainIndex(){
+    public void mainGetIndexSize(){
         for(String engine:searchEngines){
-            taskExecutor.getRequest2Engine(engine+commitRoute);
+            taskExecutor.getRequest2Engine(engine+indexSizeRoute);
         }
     }
 
@@ -75,8 +75,8 @@ public class IndexBuildServiceImpl implements IndexBuildService {
      * which may be called frequently
      */
     @Override
-    public void commitAdditionalIndex(){
-        taskExecutor.getRequest2Engine(additionalEngine+commitRoute);
+    public void additionalGetIndexSize(){
+        taskExecutor.getRequest2Engine(additionalEngine+indexSizeRoute);
     }
     /**
      * merge segment and start ann index
