@@ -28,6 +28,6 @@ public class SearchController {
     @RequestMapping(value="/search", method= RequestMethod.POST)
     public @ResponseBody List<KNNResult> search(@RequestBody JsonNode query) {
 
-        return searchServiceImpl.search( query,1000);
+        return searchServiceImpl.search( query);
     }
 }

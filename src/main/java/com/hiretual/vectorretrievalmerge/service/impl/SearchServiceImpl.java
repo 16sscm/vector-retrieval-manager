@@ -28,7 +28,7 @@ public class SearchServiceImpl implements SearchService {
     @Autowired
     RestfulTaskExecutor taskExecutor;
 
-    public List<KNNResult> search(JsonNode query,int topK) {
+    public List<KNNResult> search(JsonNode query) {
         long t=System.currentTimeMillis();
         // String esPayload= RestClient.astaskToESPayload(query);
         JsonNode esPayload=query.get("esSearchArray");
@@ -48,6 +48,7 @@ public class SearchServiceImpl implements SearchService {
         long t5=System.currentTimeMillis();
         String queryJsonString=JsonParser.getJsonString(queryWrapper);
         long t6=System.currentTimeMillis();
+        int topK=query.get("totalNum").asInt();
         try{
             List<KNNResult>knnResults=distribute(queryJsonString,topK);
             long t7=System.currentTimeMillis();
