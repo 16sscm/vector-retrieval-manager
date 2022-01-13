@@ -19,6 +19,7 @@ dependencies {
     implementation 'junit:junit:4.13.1'
 	implementation 'org.springframework.kafka:spring-kafka'
 	implementation 'org.apache.kafka:kafka-clients'
+	implementation "org.apache.httpcomponents:httpasyncclient"
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
